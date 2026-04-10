@@ -10,15 +10,13 @@
   <style>
     :root {
       --bg: #020503;
-      --panel: rgba(7, 20, 12, 0.92);
-      --panel-2: rgba(9, 26, 15, 0.96);
-      --border: rgba(85, 255, 130, 0.18);
+      --panel: rgba(7, 20, 12, 0.52);
+      --panel-2: rgba(9, 26, 15, 0.62);
+      --border: rgba(85, 255, 130, 0.16);
       --text: #c7ffd5;
       --text-dim: #73af83;
       --accent: #4dff85;
-      --accent-soft: rgba(77, 255, 133, 0.08);
-      --warning: #d8ff69;
-      --shadow: 0 0 10px rgba(77, 255, 133, 0.12), 0 0 30px rgba(77, 255, 133, 0.04);
+      --shadow: 0 0 10px rgba(77, 255, 133, 0.1), 0 0 30px rgba(77, 255, 133, 0.03);
       --radius: 18px;
       --font-main: "Courier New", "Lucida Console", monospace;
       --safe-top: env(safe-area-inset-top, 0px);
@@ -29,9 +27,7 @@
     html, body { margin: 0; min-height: 100%; }
     body {
       font-family: var(--font-main);
-      background:
-        radial-gradient(circle at top, rgba(20, 80, 35, 0.18), transparent 35%),
-        linear-gradient(180deg, #010201 0%, #020503 100%);
+      background: radial-gradient(circle at top, rgba(20, 80, 35, 0.16), transparent 35%), linear-gradient(180deg, #010201 0%, #020503 100%);
       color: var(--text);
       overflow-x: hidden;
     }
@@ -41,13 +37,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.025) 0px,
-        rgba(255,255,255,0.025) 1px,
-        transparent 2px,
-        transparent 4px
-      );
+      background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 2px, transparent 4px);
       opacity: 0.12;
       mix-blend-mode: screen;
     }
@@ -156,14 +146,14 @@
       gap: 8px;
       padding: 0 14px 14px;
     }
-    .tab-btn, button, .fake-btn, select, input, textarea {
+    .tab-btn, button, .fake-btn, select, input {
       font: inherit;
     }
     .tab-btn, button, .fake-btn {
-      border: 1px solid rgba(77,255,133,0.24);
+      border: 1px solid rgba(77,255,133,0.22);
       background: linear-gradient(180deg, rgba(12,42,20,0.95), rgba(6,20,10,0.95));
       color: var(--accent);
-      padding: 12px 12px;
+      padding: 12px;
       border-radius: 14px;
       cursor: pointer;
       text-transform: uppercase;
@@ -177,10 +167,9 @@
 
     .section { display: none; }
     .section.active { display: block; }
-
     .body { padding: 14px; display: grid; gap: 12px; }
 
-    input, textarea, select {
+    input, select {
       width: 100%;
       background: rgba(2, 10, 4, 0.92);
       color: var(--text);
@@ -191,56 +180,72 @@
       box-shadow: inset 0 0 10px rgba(77,255,133,0.04);
       min-height: 46px;
     }
-    textarea { min-height: 110px; resize: vertical; line-height: 1.55; }
-    input::placeholder, textarea::placeholder { color: #588467; }
+    input::placeholder { color: #588467; }
 
     .stack { display: grid; gap: 10px; }
     .row { display: grid; gap: 10px; }
 
-    .terminal {
-      border: 1px solid rgba(77,255,133,0.16);
-      border-radius: 14px;
-      background: rgba(4, 12, 7, 0.88);
-      padding: 12px;
-    }
-    .terminal-label {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 8px;
-    }
-    .terminal-row {
+    .list-card, .item, .stat-card, .pinned-card, .work-shell {
+      padding: 14px;
+      min-height: 58vh;
       display: grid;
-      gap: 8px;
-    }
-    .prompt {
-      color: var(--accent);
-      font-size: 13px;
-    }
-    .terminal-input {
-      background: rgba(2, 10, 4, 0.4);
-      color: #d9ffe4;
-    }
-    .terminal-log {
-      margin-top: 10px;
-      max-height: 150px;
-      overflow: auto;
-      display: grid;
-      gap: 6px;
-      font-size: 12px;
-    }
-    .terminal-line.command { color: #d9ffe4; }
-    .terminal-line.response { color: var(--text-dim); }
-    .terminal-line.error { color: var(--warning); }
-
-    .list-card, .item, .stat-card, .pinned-card {
-      border: 1px solid rgba(77,255,133,0.1);
-      border-radius: 16px;
-      background: rgba(8, 20, 12, 0.72);
+      align-content: start;
+      gap: 14px;
+      background: rgba(8, 20, 12, 0.34);
+      backdrop-filter: blur(1px);
     }
     .list-card, .stat-card, .pinned-card { padding: 12px; }
     .list-card.active { border-color: rgba(77,255,133,0.42); box-shadow: 0 0 14px rgba(77,255,133,0.12); }
+
+    .work-shell {
+      padding: 14px;
+      min-height: 58vh;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+
+    .prompt-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(77,255,133,0.14);
+      border-radius: 14px;
+      background: rgba(4, 12, 7, 0.34);
+      padding: 12px 14px;
+    }
+
+    .prompt-marker {
+      color: var(--accent);
+      font-size: 22px;
+      line-height: 1;
+      text-shadow: 0 0 8px rgba(77,255,133,0.25);
+      animation: blinkPrompt 1.1s steps(1) infinite;
+    }
+
+    @keyframes blinkPrompt {
+      0%, 55% { opacity: 1; }
+      56%, 100% { opacity: 0.35; }
+    }
+
+    .prompt-input {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      min-height: auto;
+      color: var(--text);
+      font-size: 16px;
+    }
+    .prompt-input:focus { border: 0; box-shadow: none; }
+
+    .item-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
 
     .item {
       display: grid;
@@ -248,8 +253,7 @@
       gap: 12px;
       padding: 12px;
     }
-    .item.done { opacity: 0.82; background: rgba(6, 12, 8, 0.62); }
-    .item.pinned { border-color: rgba(216,255,105,0.24); }
+    .item.done { opacity: 0.82; background: rgba(6, 12, 8, 0.18); }
 
     .checkbox {
       appearance: none;
@@ -275,28 +279,31 @@
       white-space: pre-wrap;
       word-break: break-word;
       line-height: 1.55;
+      font-size: 15px;
     }
     .item.done .item-text {
       text-decoration: line-through;
       color: #6e8f77;
     }
 
-    .badges, .actions, .toolbar, .quick-grid {
+    .actions, .quick-grid {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       align-items: center;
     }
-    .badge {
-      padding: 4px 7px;
-      border: 1px solid rgba(77,255,133,0.18);
-      border-radius: 999px;
-      color: var(--text-dim);
-      font-size: 10px;
-      text-transform: uppercase;
-      background: rgba(3, 10, 5, 0.6);
+
+    .actions {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.18s ease, opacity 0.18s ease;
     }
-    .badge.pin { color: var(--warning); border-color: rgba(216,255,105,0.28); }
+
+    .item.show-actions .actions {
+      max-height: 60px;
+      opacity: 1;
+    }
 
     .icon-btn {
       border: 1px solid rgba(77,255,133,0.16);
@@ -305,6 +312,16 @@
       border-radius: 12px;
       padding: 10px 12px;
       min-height: 42px;
+    }
+
+    .item-tools-btn {
+      border: 1px solid rgba(77,255,133,0.16);
+      background: rgba(5, 18, 8, 0.66);
+      color: var(--text-dim);
+      border-radius: 10px;
+      padding: 8px 10px;
+      min-height: 34px;
+      margin-top: 8px;
     }
 
     .stats {
@@ -330,7 +347,7 @@
       border: 1px dashed rgba(77,255,133,0.18);
       border-radius: 16px;
       color: var(--text-dim);
-      background: rgba(7, 20, 11, 0.42);
+      background: rgba(7, 20, 11, 0.10);
     }
 
     .sheet-title {
@@ -361,7 +378,7 @@
   <div class="app">
     <section class="panel header">
       <h1>Matrix Notes Mobile</h1>
-      <div class="meta">iPhone-first local command center • notes • tasks • ideas • undo</div>
+      <div class="meta">minimal iPhone checklist console</div>
       <div class="meta" id="clockLine">---</div>
       <div class="meta" id="statusLine">system ready</div>
     </section>
@@ -375,13 +392,15 @@
     </section>
 
     <section class="section active" id="tab-work">
-      <div class="panel body stack" id="workShell"></div>
+      <div class="panel body">
+        <div class="work-shell" id="workShell"></div>
+      </div>
     </section>
 
     <section class="section" id="tab-lists">
       <div class="panel body stack">
+        <div class="sheet-title">Create New List</div>
         <form id="newListForm" class="stack">
-          <div class="sheet-title">Create New List</div>
           <input id="newListTitle" type="text" maxlength="80" placeholder="e.g. Trading OS" />
           <button type="submit">Add List</button>
         </form>
@@ -405,9 +424,6 @@
 
         <div class="sheet-title">Pinned</div>
         <div class="stack" id="pinnedPanel"></div>
-
-        <div class="sheet-title">Commands</div>
-        <div class="muted">/add task Text • /add note Text • /add idea Text • /list Title • /search Text • /filter open • /category task • /pin keyword • /done keyword • /delete keyword • /undo</div>
       </div>
     </section>
 
@@ -415,37 +431,34 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'matrix_notes_mobile_iphone_v1';
+    const STORAGE_KEY = 'matrix_notes_mobile_minimal_v1';
     const MAX_HISTORY = 40;
 
     const seedData = {
       lists: [
         {
           id: crypto.randomUUID(),
-          title: 'Daily OS',
+          title: 'To Do List',
           createdAt: Date.now() - 300000,
           items: [
-            { id: crypto.randomUUID(), text: 'Review priorities for today', done: false, pinned: true, category: 'task', createdAt: Date.now() - 250000 },
-            { id: crypto.randomUUID(), text: 'Keep only the most important tasks pinned', done: false, pinned: false, category: 'note', createdAt: Date.now() - 210000 }
+            { id: crypto.randomUUID(), text: 'Wake up, Neo', done: false, createdAt: Date.now() - 250000 },
+            { id: crypto.randomUUID(), text: 'Follow the white rabbit', done: false, createdAt: Date.now() - 210000 }
           ]
         },
         {
           id: crypto.randomUUID(),
-          title: 'Trading OS',
+          title: 'Red Pill',
           createdAt: Date.now() - 220000,
           items: [
-            { id: crypto.randomUUID(), text: 'Wait for confirmation before entry', done: false, pinned: true, category: 'note', createdAt: Date.now() - 180000 },
-            { id: crypto.randomUUID(), text: 'Check economic calendar before market open', done: true, pinned: false, category: 'task', createdAt: Date.now() - 120000 }
+            { id: crypto.randomUUID(), text: 'Set top 3 signals', done: false, createdAt: Date.now() - 180000 },
+            { id: crypto.randomUUID(), text: 'Exercise', done: false, createdAt: Date.now() - 150000 },
+            { id: crypto.randomUUID(), text: 'Meditate', done: false, createdAt: Date.now() - 120000 }
           ]
         }
       ],
       activeListId: null,
       ui: {
         listQuery: '',
-        itemQuery: '',
-        category: 'all',
-        showDone: 'all',
-        terminalHistory: ['Type /help to see commands.'],
         undoStack: [],
         activeTab: 'work'
       }
@@ -485,7 +498,6 @@
     function normalizeState() {
       if (!state || !Array.isArray(state.lists)) state = structuredClone(seedData);
       if (!state.ui) state.ui = structuredClone(seedData.ui);
-      if (!Array.isArray(state.ui.terminalHistory)) state.ui.terminalHistory = ['Type /help to see commands.'];
       if (!Array.isArray(state.ui.undoStack)) state.ui.undoStack = [];
       if (!state.ui.activeTab) state.ui.activeTab = 'work';
       if (!state.activeListId && state.lists.length) state.activeListId = state.lists[0].id;
@@ -502,7 +514,6 @@
         activeListId: state.activeListId,
         ui: {
           ...state.ui,
-          terminalHistory: [...state.ui.terminalHistory],
           undoStack: []
         }
       });
@@ -513,23 +524,19 @@
       if (state.ui.undoStack.length > MAX_HISTORY) state.ui.undoStack = state.ui.undoStack.slice(-MAX_HISTORY);
     }
 
-    function performUndo(options = {}) {
-      const { skipRender = false, skipMessage = false } = options;
+    function performUndo() {
       if (!state.ui.undoStack.length) {
-        if (!skipMessage) pushTerminalLine('! Nothing to undo.');
         saveState();
-        if (!skipRender) render();
-        return false;
+        render();
+        return;
       }
       const previous = JSON.parse(state.ui.undoStack.pop());
-      const remainingHistory = [...state.ui.undoStack];
+      const remaining = [...state.ui.undoStack];
       state = previous;
       normalizeState();
-      state.ui.undoStack = remainingHistory;
-      if (!skipMessage) pushTerminalLine('Undo completed.');
+      state.ui.undoStack = remaining;
       saveState();
-      if (!skipRender) render();
-      return true;
+      render();
     }
 
     function mutate(fn) {
@@ -583,7 +590,7 @@
         '>> Initializing Matrix Mobile...',
         '>> Mounting local storage...',
         '>> Enabling touch interface...',
-        '>> Activating command console...',
+        '>> Minimal checklist mode online...',
         '>> System ready.'
       ];
       let i = 0;
@@ -602,21 +609,6 @@
       const q = state.ui.listQuery.trim().toLowerCase();
       if (!q) return state.lists;
       return state.lists.filter(list => list.title.toLowerCase().includes(q));
-    }
-
-    function filteredItems(list) {
-      let items = [...list.items];
-      const q = state.ui.itemQuery.trim().toLowerCase();
-      if (q) items = items.filter(item => item.text.toLowerCase().includes(q));
-      if (state.ui.category !== 'all') items = items.filter(item => item.category === state.ui.category);
-      if (state.ui.showDone === 'open') items = items.filter(item => !item.done);
-      if (state.ui.showDone === 'done') items = items.filter(item => item.done);
-      items.sort((a, b) => {
-        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-        if (a.done !== b.done) return a.done ? 1 : -1;
-        return b.createdAt - a.createdAt;
-      });
-      return items;
     }
 
     function renderTabs() {
@@ -658,28 +650,13 @@
         <div class="stat-card"><div class="stat-label">Undo</div><div class="stat-value">${state.ui.undoStack.length}</div></div>
       `;
 
-      const pinned = allItems.filter(i => i.pinned).sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
+      const pinned = allItems.filter(i => !i.done).slice(0, 6);
       pinnedPanel.innerHTML = pinned.length ? pinned.map(item => `
         <div class="pinned-card">
           <div>${escapeHtml(item.text)}</div>
-          <div class="tiny">${item.category} • ${item.done ? 'done' : 'open'}</div>
+          <div class="tiny">${item.done ? 'done' : 'open'}</div>
         </div>
-      `).join('') : '<div class="empty">No pinned entries yet.</div>';
-    }
-
-    function renderTerminal() {
-      const el = document.getElementById('terminalLog');
-      if (!el) return;
-      el.innerHTML = state.ui.terminalHistory.slice(-8).map(line => {
-        const type = line.startsWith('>') ? 'command' : line.startsWith('!') ? 'error' : 'response';
-        return `<div class="terminal-line ${type}">${escapeHtml(line)}</div>`;
-      }).join('');
-      el.scrollTop = el.scrollHeight;
-    }
-
-    function pushTerminalLine(line) {
-      state.ui.terminalHistory.push(line);
-      if (state.ui.terminalHistory.length > 80) state.ui.terminalHistory = state.ui.terminalHistory.slice(-80);
+      `).join('') : '<div class="empty">Nothing to show.</div>';
     }
 
     function renderWork() {
@@ -689,94 +666,47 @@
         return;
       }
 
-      const items = filteredItems(active);
+      const items = [...active.items].sort((a, b) => {
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return b.createdAt - a.createdAt;
+      });
       workShell.innerHTML = `
-        <div class="sheet-title">Active List</div>
-        <div class="list-card">
-          <strong>${escapeHtml(active.title)}</strong>
-          <div class="tiny">${active.items.length} entries • ${active.items.filter(i => i.done).length} done • ${active.items.filter(i => i.pinned).length} pinned</div>
-          <div class="toolbar" style="margin-top:10px;">
-            <button id="undoBtn">Undo</button>
-            <button id="renameListBtn">Rename</button>
-            <button id="clearDoneBtn">Clear Done</button>
-          </div>
-        </div>
+        <div class="sheet-title">${escapeHtml(active.title)}</div>
+        <div class="muted">${active.items.length} entries • ${active.items.filter(i => i.done).length} done</div>
 
-        <div class="terminal">
-          <div class="terminal-label">Command Console</div>
-          <form id="terminalForm" class="terminal-row">
-            <div class="prompt">root@iphone:~$</div>
-            <input id="terminalInput" class="terminal-input" type="text" autocomplete="off" placeholder="/help" />
-            <button type="submit">Run</button>
-          </form>
-          <div class="terminal-log" id="terminalLog"></div>
-        </div>
-
-        <form id="newItemForm" class="stack">
-          <div class="sheet-title">Add Entry</div>
-          <textarea id="newItemText" placeholder="write a note, task, idea, or checklist item..."></textarea>
-          <select id="newItemCategory">
-            <option value="task">Task</option>
-            <option value="note">Note</option>
-            <option value="idea">Idea</option>
-          </select>
-          <button type="submit">Add Entry</button>
+        <form id="promptForm" class="prompt-row">
+          <div class="prompt-marker">&gt;</div>
+          <input id="promptInput" class="prompt-input" type="text" placeholder="type item and press enter" autocomplete="off" />
         </form>
 
-        <div class="stack">
-          <div class="sheet-title">Filters</div>
-          <input id="itemSearch" type="text" placeholder="search entries..." value="${escapeHtml(state.ui.itemQuery)}" />
-          <select id="categoryFilter">
-            <option value="all" ${state.ui.category === 'all' ? 'selected' : ''}>All Types</option>
-            <option value="task" ${state.ui.category === 'task' ? 'selected' : ''}>Task</option>
-            <option value="note" ${state.ui.category === 'note' ? 'selected' : ''}>Note</option>
-            <option value="idea" ${state.ui.category === 'idea' ? 'selected' : ''}>Idea</option>
-          </select>
-          <select id="doneFilter">
-            <option value="all" ${state.ui.showDone === 'all' ? 'selected' : ''}>All Status</option>
-            <option value="open" ${state.ui.showDone === 'open' ? 'selected' : ''}>Open</option>
-            <option value="done" ${state.ui.showDone === 'done' ? 'selected' : ''}>Done</option>
-          </select>
-        </div>
-
-        <div class="stack" id="itemList">
+        <div class="item-list" id="itemList">
           ${items.length ? items.map(item => `
-            <article class="item ${item.done ? 'done' : ''} ${item.pinned ? 'pinned' : ''}" data-item-id="${item.id}">
+            <article class="item ${item.done ? 'done' : ''}" data-item-id="${item.id}">
               <input class="checkbox" type="checkbox" ${item.done ? 'checked' : ''} />
-              <div class="stack">
+              <div>
                 <div class="item-text">${escapeHtml(item.text)}</div>
-                <div class="badges">
-                  <span class="badge ${item.pinned ? 'pin' : ''}">${item.pinned ? 'pinned' : 'normal'}</span>
-                  <span class="badge">${item.category}</span>
-                </div>
                 <div class="tiny">${fmtDate(item.createdAt)}</div>
-                <div class="actions">
-                  <button class="icon-btn pin-btn" type="button">${item.pinned ? 'Unpin' : 'Pin'}</button>
+                <button class="item-tools-btn" type="button">•••</button>
+                <div class="actions" style="margin-top:8px;">
                   <button class="icon-btn edit-btn" type="button">Edit</button>
                   <button class="icon-btn delete-btn" type="button">Delete</button>
                 </div>
               </div>
             </article>
-          `).join('') : '<div class="empty">No matching entries.</div>'}
+          `).join('') : '<div class="empty">Blank workspace. Start typing above.</div>'}
         </div>
       `;
 
-      document.getElementById('newItemForm').addEventListener('submit', addItem);
-      document.getElementById('terminalForm').addEventListener('submit', runCommand);
-      document.getElementById('undoBtn').addEventListener('click', () => performUndo());
-      document.getElementById('renameListBtn').addEventListener('click', renameList);
-      document.getElementById('clearDoneBtn').addEventListener('click', clearDone);
-
-      document.getElementById('itemSearch').addEventListener('input', e => { state.ui.itemQuery = e.target.value; saveState(); renderWork(); });
-      document.getElementById('categoryFilter').addEventListener('change', e => { state.ui.category = e.target.value; saveState(); renderWork(); });
-      document.getElementById('doneFilter').addEventListener('change', e => { state.ui.showDone = e.target.value; saveState(); renderWork(); });
-
-      renderTerminal();
-
+      document.getElementById('promptForm').addEventListener('submit', addPromptItem);
       document.querySelectorAll('.item').forEach(itemEl => {
         const itemId = itemEl.dataset.itemId;
         itemEl.querySelector('.checkbox').addEventListener('change', () => toggleItem(itemId));
-        itemEl.querySelector('.pin-btn').addEventListener('click', () => togglePin(itemId));
+        itemEl.querySelector('.item-tools-btn').addEventListener('click', () => {
+          document.querySelectorAll('.item').forEach(el => {
+            if (el !== itemEl) el.classList.remove('show-actions');
+          });
+          itemEl.classList.toggle('show-actions');
+        });
         itemEl.querySelector('.edit-btn').addEventListener('click', () => editItem(itemId));
         itemEl.querySelector('.delete-btn').addEventListener('click', () => deleteItem(itemId));
       });
@@ -802,19 +732,18 @@
       });
     }
 
-    function addItem(event) {
+    function addPromptItem(event) {
       event.preventDefault();
       const active = getActiveList();
       if (!active) return;
-      const textArea = document.getElementById('newItemText');
-      const category = document.getElementById('newItemCategory').value;
-      const text = textArea.value.trim();
+      const input = document.getElementById('promptInput');
+      const text = input.value.trim();
       if (!text) return;
       mutate(() => {
-        active.items.unshift({ id: crypto.randomUUID(), text, done: false, pinned: false, category, createdAt: Date.now() });
-        textArea.value = '';
+        active.items.unshift({ id: crypto.randomUUID(), text, done: false, createdAt: Date.now() });
+        input.value = '';
       });
-      document.getElementById('newItemText')?.focus();
+      document.getElementById('promptInput')?.focus();
     }
 
     function toggleItem(itemId) {
@@ -825,20 +754,12 @@
       mutate(() => { item.done = !item.done; });
     }
 
-    function togglePin(itemId) {
-      const active = getActiveList();
-      if (!active) return;
-      const item = active.items.find(i => i.id === itemId);
-      if (!item) return;
-      mutate(() => { item.pinned = !item.pinned; });
-    }
-
     function editItem(itemId) {
       const active = getActiveList();
       if (!active) return;
       const item = active.items.find(i => i.id === itemId);
       if (!item) return;
-      const next = prompt('Edit entry:', item.text);
+      const next = prompt('Edit item:', item.text);
       if (next === null) return;
       const cleaned = next.trim();
       if (!cleaned) return;
@@ -849,139 +770,6 @@
       const active = getActiveList();
       if (!active) return;
       mutate(() => { active.items = active.items.filter(i => i.id !== itemId); });
-    }
-
-    function renameList() {
-      const active = getActiveList();
-      if (!active) return;
-      const next = prompt('Rename list:', active.title);
-      if (next === null) return;
-      const cleaned = next.trim();
-      if (!cleaned) return;
-      mutate(() => { active.title = cleaned; });
-    }
-
-    function clearDone() {
-      const active = getActiveList();
-      if (!active) return;
-      const doneCount = active.items.filter(item => item.done).length;
-      if (!doneCount) {
-        pushTerminalLine('! No completed entries to clear.');
-        saveState();
-        render();
-        return;
-      }
-      mutate(() => { active.items = active.items.filter(item => !item.done); });
-      pushTerminalLine(`Cleared ${doneCount} completed entr${doneCount === 1 ? 'y' : 'ies'}. Use Undo if needed.`);
-      saveState();
-      render();
-    }
-
-    function runCommand(event) {
-      event.preventDefault();
-      const input = document.getElementById('terminalInput');
-      if (!input) return;
-      const raw = input.value.trim();
-      if (!raw) return;
-      pushTerminalLine('> ' + raw);
-      const result = executeCommand(raw);
-      if (Array.isArray(result)) result.forEach(line => line && pushTerminalLine(line));
-      else if (result) pushTerminalLine(result);
-      input.value = '';
-      saveState();
-      render();
-      document.getElementById('terminalInput')?.focus();
-    }
-
-    function executeCommand(raw) {
-      const active = getActiveList();
-      const [cmd, ...rest] = raw.split(' ');
-      const arg = rest.join(' ').trim();
-      const lowerCmd = cmd.toLowerCase();
-
-      if (lowerCmd === '/help') return [
-        'Commands: /add task|note|idea TEXT',
-        'Commands: /list TITLE, /search TEXT, /clearsearch',
-        'Commands: /filter all|open|done',
-        'Commands: /category all|task|note|idea',
-        'Commands: /pin KEYWORD, /done KEYWORD, /undone KEYWORD, /delete KEYWORD',
-        'Commands: /undo'
-      ];
-
-      if (lowerCmd === '/undo') {
-        performUndo({ skipRender: true, skipMessage: true });
-        return 'Undo completed.';
-      }
-
-      if (lowerCmd === '/add') {
-        if (!active) return '! No active list selected.';
-        const [type, ...textParts] = rest;
-        const maybeType = (type || '').toLowerCase();
-        const category = ['task', 'note', 'idea'].includes(maybeType) ? maybeType : 'task';
-        const finalText = ['task', 'note', 'idea'].includes(maybeType) ? textParts.join(' ').trim() : arg;
-        if (!finalText) return '! Usage: /add task Buy groceries';
-        rememberState();
-        active.items.unshift({ id: crypto.randomUUID(), text: finalText, done: false, pinned: false, category, createdAt: Date.now() });
-        return `Added ${category}: ${finalText}`;
-      }
-
-      if (lowerCmd === '/list') {
-        if (!arg) return '! Usage: /list Trading OS';
-        const target = state.lists.find(list => list.title.toLowerCase().includes(arg.toLowerCase()));
-        if (!target) return `! No list matched: ${arg}`;
-        state.activeListId = target.id;
-        state.ui.activeTab = 'work';
-        return `Switched to list: ${target.title}`;
-      }
-
-      if (lowerCmd === '/search') {
-        state.ui.itemQuery = arg;
-        return `Search set to: ${arg || 'empty'}`;
-      }
-
-      if (lowerCmd === '/clearsearch') {
-        state.ui.itemQuery = '';
-        return 'Search cleared.';
-      }
-
-      if (lowerCmd === '/filter') {
-        const value = arg.toLowerCase();
-        if (!['all', 'open', 'done'].includes(value)) return '! Use /filter all|open|done';
-        state.ui.showDone = value;
-        return `Status filter: ${state.ui.showDone}`;
-      }
-
-      if (lowerCmd === '/category') {
-        const value = arg.toLowerCase();
-        if (!['all', 'task', 'note', 'idea'].includes(value)) return '! Use /category all|task|note|idea';
-        state.ui.category = value;
-        return `Category filter: ${state.ui.category}`;
-      }
-
-      if (['/pin', '/done', '/undone', '/delete'].includes(lowerCmd)) {
-        if (!active) return '! No active list selected.';
-        if (!arg) return `! Usage: ${lowerCmd} keyword`;
-        const target = active.items.find(item => item.text.toLowerCase().includes(arg.toLowerCase()));
-        if (!target) return `! No entry matched: ${arg}`;
-        rememberState();
-        if (lowerCmd === '/pin') {
-          target.pinned = !target.pinned;
-          return `${target.pinned ? 'Pinned' : 'Unpinned'}: ${target.text}`;
-        }
-        if (lowerCmd === '/done') {
-          target.done = true;
-          return `Marked done: ${target.text}`;
-        }
-        if (lowerCmd === '/undone') {
-          target.done = false;
-          return `Marked open: ${target.text}`;
-        }
-        const removedText = target.text;
-        active.items = active.items.filter(item => item.id !== target.id);
-        return `Deleted: ${removedText}`;
-      }
-
-      return '! Unknown command. Type /help';
     }
 
     function exportData() {
@@ -1040,7 +828,7 @@
 
     document.addEventListener('keydown', e => {
       const activeTag = document.activeElement?.tagName;
-      const typing = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+      const typing = activeTag === 'INPUT' || activeTag === 'SELECT';
 
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
         e.preventDefault();
@@ -1048,22 +836,12 @@
         return;
       }
 
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        state.ui.activeTab = 'work';
-        saveState();
-        render();
-        document.getElementById('terminalInput')?.focus();
-      }
-
       if (e.key === '/' && !typing) {
         e.preventDefault();
         state.ui.activeTab = 'work';
         saveState();
         render();
-        const field = document.getElementById('terminalInput');
-        field?.focus();
-        if (field && !field.value) field.value = '/';
+        document.getElementById('promptInput')?.focus();
       }
     });
 
