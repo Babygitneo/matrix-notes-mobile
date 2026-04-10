@@ -285,7 +285,7 @@
       color: #6e8f77;
     }
 
-    .actions, .quick-grid {
+    .actions, .quick-grid, .list-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -302,6 +302,14 @@
     .item.show-actions .actions {
       max-height: 60px;
       opacity: 1;
+    }
+
+    .list-actions {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .icon-btn {
@@ -400,7 +408,7 @@
       <div class="panel body stack">
         <div class="sheet-title">Create New List</div>
         <form id="newListForm" class="stack">
-          <input id="newListTitle" type="text" maxlength="80" placeholder="e.g. Trading OS" />
+          <input id="newListTitle" type="text" maxlength="80" placeholder="e.g.Plato's Cave" />
           <button type="submit">Add List</button>
         </form>
         <input id="listSearch" type="text" placeholder="search lists..." />
@@ -438,6 +446,7 @@
         {
           id: crypto.randomUUID(),
           title: 'To Do List',
+          pinned: true,
           createdAt: Date.now() - 300000,
           items: [
             { id: crypto.randomUUID(), text: 'Wake up, Neo', done: false, createdAt: Date.now() - 250000 },
@@ -447,6 +456,7 @@
         {
           id: crypto.randomUUID(),
           title: 'Red Pill',
+          pinned: false,
           createdAt: Date.now() - 220000,
           items: [
             { id: crypto.randomUUID(), text: 'Set top 3 signals', done: false, createdAt: Date.now() - 180000 },
@@ -499,6 +509,7 @@
       if (!state.ui) state.ui = structuredClone(seedData.ui);
       if (!Array.isArray(state.ui.undoStack)) state.ui.undoStack = [];
       if (!state.ui.activeTab) state.ui.activeTab = 'work';
+      state.lists = state.lists.map(list => ({ ...list, pinned: Boolean(list.pinned) }));
       if (!state.activeListId && state.lists.length) state.activeListId = state.lists[0].id;
     }
 
@@ -605,9 +616,13 @@
     }
 
     function filteredLists() {
+      const sorted = [...state.lists].sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        return b.createdAt - a.createdAt;
+      });
       const q = state.ui.listQuery.trim().toLowerCase();
-      if (!q) return state.lists;
-      return state.lists.filter(list => list.title.toLowerCase().includes(q));
+      if (!q) return sorted;
+      return sorted.filter(list => list.title.toLowerCase().includes(q));
     }
 
     function renderTabs() {
@@ -626,17 +641,27 @@
         return `
           <div class="list-card ${list.id === state.activeListId ? 'active' : ''}" data-list-id="${list.id}">
             <div class="row"><strong>${escapeHtml(list.title)}</strong><div class="tiny">${done}/${list.items.length} • ${new Date(list.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</div></div>
+            <div class="list-actions">
+              <button class="icon-btn list-pin-btn" type="button">${list.pinned ? 'Unpin' : 'Pin'}</button>
+              <button class="icon-btn list-edit-btn" type="button">Edit</button>
+              <button class="icon-btn list-delete-btn" type="button">Delete</button>
+            </div>
           </div>
         `;
       }).join('') : '<div class="empty">No matching lists found.</div>';
 
       document.querySelectorAll('.list-card').forEach(card => {
-        card.addEventListener('click', () => {
-          state.activeListId = card.dataset.listId;
+        const listId = card.dataset.listId;
+        card.addEventListener('click', (event) => {
+          if (event.target.closest('.list-actions')) return;
+          state.activeListId = listId;
           state.ui.activeTab = 'work';
           saveState();
           render();
         });
+        card.querySelector('.list-pin-btn').addEventListener('click', () => toggleListPin(listId));
+        card.querySelector('.list-edit-btn').addEventListener('click', () => editList(listId));
+        card.querySelector('.list-delete-btn').addEventListener('click', () => deleteList(listId));
       });
     }
 
@@ -723,11 +748,38 @@
       const title = newListTitle.value.trim();
       if (!title) return;
       mutate(() => {
-        const list = { id: crypto.randomUUID(), title, createdAt: Date.now(), items: [] };
+        const list = { id: crypto.randomUUID(), title, pinned: false, createdAt: Date.now(), items: [] };
         state.lists.unshift(list);
         state.activeListId = list.id;
         newListTitle.value = '';
         state.ui.activeTab = 'work';
+      });
+    }
+
+    function toggleListPin(listId) {
+      const list = state.lists.find(l => l.id === listId);
+      if (!list) return;
+      mutate(() => { list.pinned = !list.pinned; });
+    }
+
+    function editList(listId) {
+      const list = state.lists.find(l => l.id === listId);
+      if (!list) return;
+      const next = prompt('Edit list name:', list.title);
+      if (next === null) return;
+      const cleaned = next.trim();
+      if (!cleaned) return;
+      mutate(() => { list.title = cleaned; });
+    }
+
+    function deleteList(listId) {
+      const list = state.lists.find(l => l.id === listId);
+      if (!list) return;
+      const ok = confirm(`Delete list: ${list.title}?`);
+      if (!ok) return;
+      mutate(() => {
+        state.lists = state.lists.filter(l => l.id !== listId);
+        if (state.activeListId === listId) state.activeListId = state.lists[0]?.id || null;
       });
     }
 
