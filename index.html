@@ -25,9 +25,12 @@
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; min-height: 100%; }
+
     body {
       font-family: var(--font-main);
-      background: radial-gradient(circle at top, rgba(20, 80, 35, 0.16), transparent 35%), linear-gradient(180deg, #010201 0%, #020503 100%);
+      background:
+        radial-gradient(circle at top, rgba(20, 80, 35, 0.16), transparent 35%),
+        linear-gradient(180deg, #010201 0%, #020503 100%);
       color: var(--text);
       overflow-x: hidden;
     }
@@ -37,7 +40,13 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 2px, transparent 4px);
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.025) 0px,
+        rgba(255,255,255,0.025) 1px,
+        transparent 2px,
+        transparent 4px
+      );
       opacity: 0.12;
       mix-blend-mode: screen;
     }
@@ -77,7 +86,9 @@
       padding: 18px;
       transition: opacity 0.35s ease, visibility 0.35s ease;
     }
+
     .boot.hidden { opacity: 0; visibility: hidden; }
+
     .boot-box {
       width: 100%;
       max-width: 480px;
@@ -87,6 +98,7 @@
       box-shadow: var(--shadow);
       padding: 18px;
     }
+
     .boot-title {
       margin: 0 0 12px;
       color: var(--accent);
@@ -94,6 +106,7 @@
       text-transform: uppercase;
       letter-spacing: 1.4px;
     }
+
     .boot-log {
       min-height: 140px;
       line-height: 1.7;
@@ -126,6 +139,7 @@
       display: grid;
       gap: 8px;
     }
+
     .header h1 {
       margin: 0;
       font-size: 22px;
@@ -134,6 +148,7 @@
       letter-spacing: 1.4px;
       text-shadow: 0 0 8px rgba(77,255,133,0.3);
     }
+
     .meta, .muted, .tiny {
       color: var(--text-dim);
       font-size: 12px;
@@ -146,9 +161,11 @@
       gap: 6px;
       padding: 0 10px 10px;
     }
+
     .tab-btn, button, .fake-btn, select, input {
       font: inherit;
     }
+
     .tab-btn, button, .fake-btn {
       border: 1px solid rgba(77,255,133,0.22);
       background: linear-gradient(180deg, rgba(12,42,20,0.95), rgba(6,20,10,0.95));
@@ -160,6 +177,7 @@
       letter-spacing: 0.6px;
       min-height: 36px;
     }
+
     .tab-btn.active {
       border-color: rgba(77,255,133,0.5);
       box-shadow: 0 0 14px rgba(77,255,133,0.12);
@@ -167,7 +185,18 @@
 
     .section { display: none; }
     .section.active { display: block; }
-    .body { padding: 10px; display: grid; gap: 8px; }
+
+    .body {
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    #tab-lists .body,
+    #tab-tools .body {
+      min-height: 58vh;
+      align-content: start;
+    }
 
     input, select {
       width: 100%;
@@ -180,27 +209,44 @@
       box-shadow: inset 0 0 10px rgba(77,255,133,0.04);
       min-height: 36px;
     }
+
     input::placeholder { color: #588467; }
 
     .stack { display: grid; gap: 6px; }
     .row { display: grid; gap: 3px; }
 
-    .list-card, .item, .stat-card, .pinned-card, .work-shell {
+    .list-card,
+    .item,
+    .stat-card,
+    .pinned-card {
+      border: 1px solid rgba(77,255,133,0.1);
+      border-radius: 16px;
+      background: rgba(8, 20, 12, 0.44);
+    }
+
+    .list-card,
+    .stat-card,
+    .pinned-card {
+      padding: 7px 9px;
+      min-height: auto;
+      gap: 4px;
+    }
+
+    .list-card.active {
+      border-color: rgba(77,255,133,0.42);
+      box-shadow: 0 0 14px rgba(77,255,133,0.12);
+    }
+
+    .work-shell {
+      border: 1px solid rgba(77,255,133,0.1);
+      border-radius: 16px;
+      background: rgba(8, 20, 12, 0.18);
+      backdrop-filter: blur(1px);
       padding: 8px;
       min-height: 58vh;
       display: grid;
       align-content: start;
       gap: 8px;
-    }
-    .list-card, .stat-card, .pinned-card { padding: 7px 9px; min-height: auto; gap: 4px; }
-    .list-card.active { border-color: rgba(77,255,133,0.42); box-shadow: 0 0 14px rgba(77,255,133,0.12); }
-
-    .work-shell {
-      padding: 14px;
-      min-height: 58vh;
-      display: grid;
-      align-content: start;
-      gap: 14px;
     }
 
     .prompt-row {
@@ -237,7 +283,11 @@
       color: var(--text);
       font-size: 14px;
     }
-    .prompt-input:focus { border: 0; box-shadow: none; }
+
+    .prompt-input:focus {
+      border: 0;
+      box-shadow: none;
+    }
 
     .item-list {
       display: grid;
@@ -252,7 +302,11 @@
       padding: 7px 9px;
       min-height: auto;
     }
-    .item.done { opacity: 0.82; background: rgba(6, 12, 8, 0.18); }
+
+    .item.done {
+      opacity: 0.82;
+      background: rgba(6, 12, 8, 0.18);
+    }
 
     .checkbox {
       appearance: none;
@@ -264,6 +318,7 @@
       margin-top: 2px;
       position: relative;
     }
+
     .checkbox:checked::after {
       content: "✓";
       position: absolute;
@@ -280,6 +335,7 @@
       line-height: 1.32;
       font-size: 14px;
     }
+
     .item.done .item-text {
       text-decoration: line-through;
       color: #6e8f77;
@@ -336,12 +392,14 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 6px;
     }
+
     .stat-label {
       font-size: 11px;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.6px;
     }
+
     .stat-value {
       margin-top: 3px;
       font-size: 16px;
@@ -408,7 +466,7 @@
       <div class="panel body stack">
         <div class="sheet-title">Create New List</div>
         <form id="newListForm" class="stack">
-          <input id="newListTitle" type="text" maxlength="80" placeholder="e.g.Plato's Cave" />
+          <input id="newListTitle" type="text" maxlength="80" placeholder="Plato's Cave" />
           <button type="submit">Add List</button>
         </form>
         <input id="listSearch" type="text" placeholder="search lists..." />
@@ -531,7 +589,9 @@
 
     function rememberState() {
       state.ui.undoStack.push(snapshot());
-      if (state.ui.undoStack.length > MAX_HISTORY) state.ui.undoStack = state.ui.undoStack.slice(-MAX_HISTORY);
+      if (state.ui.undoStack.length > MAX_HISTORY) {
+        state.ui.undoStack = state.ui.undoStack.slice(-MAX_HISTORY);
+      }
     }
 
     function performUndo() {
@@ -561,7 +621,12 @@
     }
 
     function fmtDate(ts) {
-      return new Date(ts).toLocaleString([], { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+      return new Date(ts).toLocaleString([], {
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     }
 
     function escapeHtml(str) {
@@ -575,18 +640,26 @@
 
     function updateClock() {
       const now = new Date();
-      clockLine.textContent = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) + ' • ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      clockLine.textContent =
+        now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) +
+        ' • ' +
+        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
     function createRain() {
       const glyphs = '01アイウエオカキクケコサシスセソABCDEFGHIJKLMNOPQRSTUVWXYZ';
       const count = Math.min(20, Math.floor(window.innerWidth / 22));
       rain.innerHTML = '';
+
       for (let i = 0; i < count; i++) {
         const span = document.createElement('span');
         let text = '';
         const length = 12 + Math.floor(Math.random() * 16);
-        for (let j = 0; j < length; j++) text += glyphs[Math.floor(Math.random() * glyphs.length)] + '\n';
+
+        for (let j = 0; j < length; j++) {
+          text += glyphs[Math.floor(Math.random() * glyphs.length)] + '\n';
+        }
+
         span.textContent = text;
         span.style.left = `${Math.random() * 100}%`;
         span.style.animationDuration = `${7 + Math.random() * 10}s`;
@@ -603,11 +676,14 @@
         '>> Minimal checklist mode online...',
         '>> System ready.'
       ];
+
       let i = 0;
       bootLog.textContent = '';
+
       const timer = setInterval(() => {
         bootLog.textContent += lines[i] + '\n';
         i += 1;
+
         if (i >= lines.length) {
           clearInterval(timer);
           setTimeout(() => bootScreen.classList.add('hidden'), 380);
@@ -620,8 +696,10 @@
         if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
         return b.createdAt - a.createdAt;
       });
+
       const q = state.ui.listQuery.trim().toLowerCase();
       if (!q) return sorted;
+
       return sorted.filter(list => list.title.toLowerCase().includes(q));
     }
 
@@ -629,6 +707,7 @@
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === state.ui.activeTab);
       });
+
       document.querySelectorAll('.section').forEach(section => {
         section.classList.toggle('active', section.id === `tab-${state.ui.activeTab}`);
       });
@@ -636,22 +715,29 @@
 
     function renderLists() {
       const lists = filteredLists();
-      listStack.innerHTML = lists.length ? lists.map(list => {
-        const done = list.items.filter(item => item.done).length;
-        return `
-          <div class="list-card ${list.id === state.activeListId ? 'active' : ''}" data-list-id="${list.id}">
-            <div class="row"><strong>${escapeHtml(list.title)}</strong><div class="tiny">${done}/${list.items.length} • ${new Date(list.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</div></div>
-            <div class="list-actions">
-              <button class="icon-btn list-pin-btn" type="button">${list.pinned ? 'Unpin' : 'Pin'}</button>
-              <button class="icon-btn list-edit-btn" type="button">Edit</button>
-              <button class="icon-btn list-delete-btn" type="button">Delete</button>
-            </div>
-          </div>
-        `;
-      }).join('') : '<div class="empty">No matching lists found.</div>';
+
+      listStack.innerHTML = lists.length
+        ? lists.map(list => {
+            const done = list.items.filter(item => item.done).length;
+            return `
+              <div class="list-card ${list.id === state.activeListId ? 'active' : ''}" data-list-id="${list.id}">
+                <div class="row">
+                  <strong>${escapeHtml(list.title)}</strong>
+                  <div class="tiny">${done}/${list.items.length} • ${new Date(list.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</div>
+                </div>
+                <div class="list-actions">
+                  <button class="icon-btn list-pin-btn" type="button">${list.pinned ? 'Unpin' : 'Pin'}</button>
+                  <button class="icon-btn list-edit-btn" type="button">Edit</button>
+                  <button class="icon-btn list-delete-btn" type="button">Delete</button>
+                </div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="empty">No matching lists found.</div>';
 
       document.querySelectorAll('.list-card').forEach(card => {
         const listId = card.dataset.listId;
+
         card.addEventListener('click', (event) => {
           if (event.target.closest('.list-actions')) return;
           state.activeListId = listId;
@@ -659,6 +745,7 @@
           saveState();
           render();
         });
+
         card.querySelector('.list-pin-btn').addEventListener('click', () => toggleListPin(listId));
         card.querySelector('.list-edit-btn').addEventListener('click', () => editList(listId));
         card.querySelector('.list-delete-btn').addEventListener('click', () => deleteList(listId));
@@ -667,6 +754,7 @@
 
     function renderStats() {
       const allItems = state.lists.flatMap(list => list.items);
+
       statsGrid.innerHTML = `
         <div class="stat-card"><div class="stat-label">Lists</div><div class="stat-value">${state.lists.length}</div></div>
         <div class="stat-card"><div class="stat-label">Open</div><div class="stat-value">${allItems.filter(i => !i.done).length}</div></div>
@@ -675,16 +763,19 @@
       `;
 
       const pinned = allItems.filter(i => !i.done).slice(0, 6);
-      pinnedPanel.innerHTML = pinned.length ? pinned.map(item => `
-        <div class="pinned-card">
-          <div>${escapeHtml(item.text)}</div>
-          <div class="tiny">${item.done ? 'done' : 'open'}</div>
-        </div>
-      `).join('') : '<div class="empty">Nothing to show.</div>';
+      pinnedPanel.innerHTML = pinned.length
+        ? pinned.map(item => `
+            <div class="pinned-card">
+              <div>${escapeHtml(item.text)}</div>
+              <div class="tiny">${item.done ? 'done' : 'open'}</div>
+            </div>
+          `).join('')
+        : '<div class="empty">Nothing to show.</div>';
     }
 
     function renderWork() {
       const active = getActiveList();
+
       if (!active) {
         workShell.innerHTML = '<div class="empty">Create a list first.</div>';
         return;
@@ -694,6 +785,7 @@
         if (a.done !== b.done) return a.done ? 1 : -1;
         return b.createdAt - a.createdAt;
       });
+
       workShell.innerHTML = `
         <div class="sheet-title">${escapeHtml(active.title)}</div>
         <div class="muted">${active.items.length} entries • ${active.items.filter(i => i.done).length} done</div>
@@ -722,8 +814,10 @@
       `;
 
       document.getElementById('promptForm').addEventListener('submit', addPromptItem);
+
       document.querySelectorAll('.item').forEach(itemEl => {
         const itemId = itemEl.dataset.itemId;
+
         itemEl.querySelector('.checkbox').addEventListener('change', () => toggleItem(itemId));
         itemEl.querySelector('.item-tools-btn').addEventListener('click', () => {
           document.querySelectorAll('.item').forEach(el => {
@@ -747,8 +841,15 @@
       event.preventDefault();
       const title = newListTitle.value.trim();
       if (!title) return;
+
       mutate(() => {
-        const list = { id: crypto.randomUUID(), title, pinned: false, createdAt: Date.now(), items: [] };
+        const list = {
+          id: crypto.randomUUID(),
+          title,
+          pinned: false,
+          createdAt: Date.now(),
+          items: []
+        };
         state.lists.unshift(list);
         state.activeListId = list.id;
         newListTitle.value = '';
@@ -765,21 +866,28 @@
     function editList(listId) {
       const list = state.lists.find(l => l.id === listId);
       if (!list) return;
+
       const next = prompt('Edit list name:', list.title);
       if (next === null) return;
+
       const cleaned = next.trim();
       if (!cleaned) return;
+
       mutate(() => { list.title = cleaned; });
     }
 
     function deleteList(listId) {
       const list = state.lists.find(l => l.id === listId);
       if (!list) return;
+
       const ok = confirm(`Delete list: ${list.title}?`);
       if (!ok) return;
+
       mutate(() => {
         state.lists = state.lists.filter(l => l.id !== listId);
-        if (state.activeListId === listId) state.activeListId = state.lists[0]?.id || null;
+        if (state.activeListId === listId) {
+          state.activeListId = state.lists[0]?.id || null;
+        }
       });
     }
 
@@ -787,40 +895,57 @@
       event.preventDefault();
       const active = getActiveList();
       if (!active) return;
+
       const input = document.getElementById('promptInput');
       const text = input.value.trim();
       if (!text) return;
+
       mutate(() => {
-        active.items.unshift({ id: crypto.randomUUID(), text, done: false, createdAt: Date.now() });
+        active.items.unshift({
+          id: crypto.randomUUID(),
+          text,
+          done: false,
+          createdAt: Date.now()
+        });
         input.value = '';
       });
+
       document.getElementById('promptInput')?.focus();
     }
 
     function toggleItem(itemId) {
       const active = getActiveList();
       if (!active) return;
+
       const item = active.items.find(i => i.id === itemId);
       if (!item) return;
+
       mutate(() => { item.done = !item.done; });
     }
 
     function editItem(itemId) {
       const active = getActiveList();
       if (!active) return;
+
       const item = active.items.find(i => i.id === itemId);
       if (!item) return;
+
       const next = prompt('Edit item:', item.text);
       if (next === null) return;
+
       const cleaned = next.trim();
       if (!cleaned) return;
+
       mutate(() => { item.text = cleaned; });
     }
 
     function deleteItem(itemId) {
       const active = getActiveList();
       if (!active) return;
-      mutate(() => { active.items = active.items.filter(i => i.id !== itemId); });
+
+      mutate(() => {
+        active.items = active.items.filter(i => i.id !== itemId);
+      });
     }
 
     function exportData() {
@@ -838,6 +963,7 @@
     function importData(event) {
       const file = event.target.files?.[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = e => {
         try {
@@ -854,10 +980,12 @@
           importInput.value = '';
         }
       };
+
       reader.readAsText(file);
     }
 
     newListForm.addEventListener('submit', addList);
+
     listSearch.value = state.ui.listQuery || '';
     listSearch.addEventListener('input', e => {
       state.ui.listQuery = e.target.value;
@@ -873,7 +1001,7 @@
       btn.addEventListener('click', () => {
         state.ui.activeTab = btn.dataset.tab;
         saveState();
-        renderTabs();
+        render();
       });
     });
 
