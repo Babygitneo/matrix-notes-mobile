@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#041108" />
+  <title>Matrix Notes Mobile</title>
+  <style>
+    :root {
+      --bg: #020503;
+      --panel: rgba(7, 20, 12, 0.92);
+      --panel-2: rgba(9, 26, 15, 0.96);
+      --border: rgba(85, 255, 130, 0.18);
+      --text: #c7ffd5;
+      --text-dim: #73af83;
+      --accent: #4dff85;
+      --accent-soft: rgba(77, 255, 133, 0.08);
+      --warning: #d8ff69;
+      --shadow: 0 0 10px rgba(77, 255, 133, 0.12), 0 0 30px rgba(77, 255, 133, 0.04);
+      --radius: 18px;
+      --font-main: "Courier New", "Lucida Console", monospace;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: var(--font-main);
+      background:
+        radial-gradient(circle at top, rgba(20, 80, 35, 0.18), transparent 35%),
+        linear-gradient(180deg, #010201 0%, #020503 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.025) 0px,
+        rgba(255,255,255,0.025) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      opacity: 0.12;
+      mix-blend-mode: screen;
+    }
+
+    .rain {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .rain span {
+      position: absolute;
+      top: -20%;
+      color: var(--accent);
+      font-size: 11px;
+      white-space: pre;
+      animation: fall linear infinite;
+      text-shadow: 0 0 6px rgba(77,255,133,0.3);
+      user-select: none;
+    }
+
+    @keyframes fall {
+      from { transform: translateY(-15vh); }
+      to { transform: translateY(120vh); }
+    }
+
+    .boot {
+      position: fixed;
+      inset: 0;
+      background: #010201;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .boot.hidden { opacity: 0; visibility: hidden; }
+    .boot-box {
+      width: 100%;
+      max-width: 480px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(6,18,10,0.96), rgba(5,12,8,0.98));
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .boot-title {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+    }
+    .boot-log {
+      min-height: 140px;
+      line-height: 1.7;
+      font-size: 13px;
+      color: var(--text-dim);
+      white-space: pre-wrap;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: calc(14px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .header {
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      text-shadow: 0 0 8px rgba(77,255,133,0.3);
+    }
+    .meta, .muted, .tiny {
+      color: var(--text-dim);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0 14px 14px;
+    }
+    .tab-btn, button, .fake-btn, select, input, textarea {
+      font: inherit;
+    }
+    .tab-btn, button, .fake-btn {
+      border: 1px solid rgba(77,255,133,0.24);
+      background: linear-gradient(180deg, rgba(12,42,20,0.95), rgba(6,20,10,0.95));
+      color: var(--accent);
+      padding: 12px 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      min-height: 46px;
+    }
+    .tab-btn.active {
+      border-color: rgba(77,255,133,0.5);
+      box-shadow: 0 0 14px rgba(77,255,133,0.12);
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .body { padding: 14px; display: grid; gap: 12px; }
+
+    input, textarea, select {
+      width: 100%;
+      background: rgba(2, 10, 4, 0.92);
+      color: var(--text);
+      border: 1px solid rgba(77,255,133,0.18);
+      border-radius: 14px;
+      padding: 13px 14px;
+      outline: none;
+      box-shadow: inset 0 0 10px rgba(77,255,133,0.04);
+      min-height: 46px;
+    }
+    textarea { min-height: 110px; resize: vertical; line-height: 1.55; }
+    input::placeholder, textarea::placeholder { color: #588467; }
+
+    .stack { display: grid; gap: 10px; }
+    .row { display: grid; gap: 10px; }
+
+    .terminal {
+      border: 1px solid rgba(77,255,133,0.16);
+      border-radius: 14px;
+      background: rgba(4, 12, 7, 0.88);
+      padding: 12px;
+    }
+    .terminal-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .terminal-row {
+      display: grid;
+      gap: 8px;
+    }
+    .prompt {
+      color: var(--accent);
+      font-size: 13px;
+    }
+    .terminal-input {
+      background: rgba(2, 10, 4, 0.4);
+      color: #d9ffe4;
+    }
+    .terminal-log {
+      margin-top: 10px;
+      max-height: 150px;
+      overflow: auto;
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .terminal-line.command { color: #d9ffe4; }
+    .terminal-line.response { color: var(--text-dim); }
+    .terminal-line.error { color: var(--warning); }
+
+    .list-card, .item, .stat-card, .pinned-card {
+      border: 1px solid rgba(77,255,133,0.1);
+      border-radius: 16px;
+      background: rgba(8, 20, 12, 0.72);
+    }
+    .list-card, .stat-card, .pinned-card { padding: 12px; }
+    .list-card.active { border-color: rgba(77,255,133,0.42); box-shadow: 0 0 14px rgba(77,255,133,0.12); }
+
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      padding: 12px;
+    }
+    .item.done { opacity: 0.82; background: rgba(6, 12, 8, 0.62); }
+    .item.pinned { border-color: rgba(216,255,105,0.24); }
+
+    .checkbox {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid rgba(77,255,133,0.5);
+      background: rgba(1, 8, 3, 0.95);
+      margin-top: 2px;
+      position: relative;
+    }
+    .checkbox:checked::after {
+      content: "✓";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    .item-text {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.55;
+    }
+    .item.done .item-text {
+      text-decoration: line-through;
+      color: #6e8f77;
+    }
+
+    .badges, .actions, .toolbar, .quick-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .badge {
+      padding: 4px 7px;
+      border: 1px solid rgba(77,255,133,0.18);
+      border-radius: 999px;
+      color: var(--text-dim);
+      font-size: 10px;
+      text-transform: uppercase;
+      background: rgba(3, 10, 5, 0.6);
+    }
+    .badge.pin { color: var(--warning); border-color: rgba(216,255,105,0.28); }
+
+    .icon-btn {
+      border: 1px solid rgba(77,255,133,0.16);
+      background: rgba(5, 18, 8, 0.86);
+      color: var(--text-dim);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-height: 42px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .stat-value {
+      margin-top: 8px;
+      font-size: 20px;
+      color: var(--text);
+    }
+
+    .empty {
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed rgba(77,255,133,0.18);
+      border-radius: 16px;
+      color: var(--text-dim);
+      background: rgba(7, 20, 11, 0.42);
+    }
+
+    .sheet-title {
+      font-size: 13px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #50795d;
+      font-size: 11px;
+      padding: 4px 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="boot" id="bootScreen">
+    <div class="boot-box">
+      <h2 class="boot-title">Matrix Mobile // Boot</h2>
+      <div class="boot-log" id="bootLog"></div>
+    </div>
+  </div>
+
+  <div class="rain" id="rain"></div>
+
+  <div class="app">
+    <section class="panel header">
+      <h1>Matrix Notes Mobile</h1>
+      <div class="meta">iPhone-first local command center • notes • tasks • ideas • undo</div>
+      <div class="meta" id="clockLine">---</div>
+      <div class="meta" id="statusLine">system ready</div>
+    </section>
+
+    <section class="panel">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="work">Work</button>
+        <button class="tab-btn" data-tab="lists">Lists</button>
+        <button class="tab-btn" data-tab="tools">Tools</button>
+      </div>
+    </section>
+
+    <section class="section active" id="tab-work">
+      <div class="panel body stack" id="workShell"></div>
+    </section>
+
+    <section class="section" id="tab-lists">
+      <div class="panel body stack">
+        <form id="newListForm" class="stack">
+          <div class="sheet-title">Create New List</div>
+          <input id="newListTitle" type="text" maxlength="80" placeholder="e.g. Trading OS" />
+          <button type="submit">Add List</button>
+        </form>
+        <input id="listSearch" type="text" placeholder="search lists..." />
+        <div class="stack" id="listStack"></div>
+      </div>
+    </section>
+
+    <section class="section" id="tab-tools">
+      <div class="panel body stack">
+        <div class="sheet-title">Stats</div>
+        <div class="stats" id="statsGrid"></div>
+
+        <div class="sheet-title">Backup</div>
+        <div class="quick-grid">
+          <button id="exportBtn">Export</button>
+          <label class="fake-btn" for="importInput">Import</label>
+          <input id="importInput" type="file" accept="application/json" hidden />
+          <button id="undoGlobalBtn">Undo</button>
+        </div>
+
+        <div class="sheet-title">Pinned</div>
+        <div class="stack" id="pinnedPanel"></div>
+
+        <div class="sheet-title">Commands</div>
+        <div class="muted">/add task Text • /add note Text • /add idea Text • /list Title • /search Text • /filter open • /category task • /pin keyword • /done keyword • /delete keyword • /undo</div>
+      </div>
+    </section>
+
+    <div class="footer">local iPhone web app • add to home screen in Safari</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'matrix_notes_mobile_iphone_v1';
+    const MAX_HISTORY = 40;
+
+    const seedData = {
+      lists: [
+        {
+          id: crypto.randomUUID(),
+          title: 'Daily OS',
+          createdAt: Date.now() - 300000,
+          items: [
+            { id: crypto.randomUUID(), text: 'Review priorities for today', done: false, pinned: true, category: 'task', createdAt: Date.now() - 250000 },
+            { id: crypto.randomUUID(), text: 'Keep only the most important tasks pinned', done: false, pinned: false, category: 'note', createdAt: Date.now() - 210000 }
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          title: 'Trading OS',
+          createdAt: Date.now() - 220000,
+          items: [
+            { id: crypto.randomUUID(), text: 'Wait for confirmation before entry', done: false, pinned: true, category: 'note', createdAt: Date.now() - 180000 },
+            { id: crypto.randomUUID(), text: 'Check economic calendar before market open', done: true, pinned: false, category: 'task', createdAt: Date.now() - 120000 }
+          ]
+        }
+      ],
+      activeListId: null,
+      ui: {
+        listQuery: '',
+        itemQuery: '',
+        category: 'all',
+        showDone: 'all',
+        terminalHistory: ['Type /help to see commands.'],
+        undoStack: [],
+        activeTab: 'work'
+      }
+    };
+
+    let state = loadState();
+    normalizeState();
+
+    const bootScreen = document.getElementById('bootScreen');
+    const bootLog = document.getElementById('bootLog');
+    const rain = document.getElementById('rain');
+    const workShell = document.getElementById('workShell');
+    const listStack = document.getElementById('listStack');
+    const statsGrid = document.getElementById('statsGrid');
+    const pinnedPanel = document.getElementById('pinnedPanel');
+    const clockLine = document.getElementById('clockLine');
+    const statusLine = document.getElementById('statusLine');
+    const newListForm = document.getElementById('newListForm');
+    const newListTitle = document.getElementById('newListTitle');
+    const listSearch = document.getElementById('listSearch');
+    const exportBtn = document.getElementById('exportBtn');
+    const importInput = document.getElementById('importInput');
+    const undoGlobalBtn = document.getElementById('undoGlobalBtn');
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(seedData);
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.lists)) return structuredClone(seedData);
+        return parsed;
+      } catch {
+        return structuredClone(seedData);
+      }
+    }
+
+    function normalizeState() {
+      if (!state || !Array.isArray(state.lists)) state = structuredClone(seedData);
+      if (!state.ui) state.ui = structuredClone(seedData.ui);
+      if (!Array.isArray(state.ui.terminalHistory)) state.ui.terminalHistory = ['Type /help to see commands.'];
+      if (!Array.isArray(state.ui.undoStack)) state.ui.undoStack = [];
+      if (!state.ui.activeTab) state.ui.activeTab = 'work';
+      if (!state.activeListId && state.lists.length) state.activeListId = state.lists[0].id;
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      statusLine.textContent = 'sync complete • ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function snapshot() {
+      return JSON.stringify({
+        lists: state.lists,
+        activeListId: state.activeListId,
+        ui: {
+          ...state.ui,
+          terminalHistory: [...state.ui.terminalHistory],
+          undoStack: []
+        }
+      });
+    }
+
+    function rememberState() {
+      state.ui.undoStack.push(snapshot());
+      if (state.ui.undoStack.length > MAX_HISTORY) state.ui.undoStack = state.ui.undoStack.slice(-MAX_HISTORY);
+    }
+
+    function performUndo(options = {}) {
+      const { skipRender = false, skipMessage = false } = options;
+      if (!state.ui.undoStack.length) {
+        if (!skipMessage) pushTerminalLine('! Nothing to undo.');
+        saveState();
+        if (!skipRender) render();
+        return false;
+      }
+      const previous = JSON.parse(state.ui.undoStack.pop());
+      const remainingHistory = [...state.ui.undoStack];
+      state = previous;
+      normalizeState();
+      state.ui.undoStack = remainingHistory;
+      if (!skipMessage) pushTerminalLine('Undo completed.');
+      saveState();
+      if (!skipRender) render();
+      return true;
+    }
+
+    function mutate(fn) {
+      rememberState();
+      fn();
+      saveState();
+      render();
+    }
+
+    function getActiveList() {
+      return state.lists.find(list => list.id === state.activeListId) || null;
+    }
+
+    function fmtDate(ts) {
+      return new Date(ts).toLocaleString([], { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function updateClock() {
+      const now = new Date();
+      clockLine.textContent = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) + ' • ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function createRain() {
+      const glyphs = '01アイウエオカキクケコサシスセソABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const count = Math.min(20, Math.floor(window.innerWidth / 22));
+      rain.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        let text = '';
+        const length = 12 + Math.floor(Math.random() * 16);
+        for (let j = 0; j < length; j++) text += glyphs[Math.floor(Math.random() * glyphs.length)] + '\n';
+        span.textContent = text;
+        span.style.left = `${Math.random() * 100}%`;
+        span.style.animationDuration = `${7 + Math.random() * 10}s`;
+        span.style.animationDelay = `${Math.random() * -12}s`;
+        rain.appendChild(span);
+      }
+    }
+
+    function runBoot() {
+      const lines = [
+        '>> Initializing Matrix Mobile...',
+        '>> Mounting local storage...',
+        '>> Enabling touch interface...',
+        '>> Activating command console...',
+        '>> System ready.'
+      ];
+      let i = 0;
+      bootLog.textContent = '';
+      const timer = setInterval(() => {
+        bootLog.textContent += lines[i] + '\n';
+        i += 1;
+        if (i >= lines.length) {
+          clearInterval(timer);
+          setTimeout(() => bootScreen.classList.add('hidden'), 380);
+        }
+      }, 220);
+    }
+
+    function filteredLists() {
+      const q = state.ui.listQuery.trim().toLowerCase();
+      if (!q) return state.lists;
+      return state.lists.filter(list => list.title.toLowerCase().includes(q));
+    }
+
+    function filteredItems(list) {
+      let items = [...list.items];
+      const q = state.ui.itemQuery.trim().toLowerCase();
+      if (q) items = items.filter(item => item.text.toLowerCase().includes(q));
+      if (state.ui.category !== 'all') items = items.filter(item => item.category === state.ui.category);
+      if (state.ui.showDone === 'open') items = items.filter(item => !item.done);
+      if (state.ui.showDone === 'done') items = items.filter(item => item.done);
+      items.sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return b.createdAt - a.createdAt;
+      });
+      return items;
+    }
+
+    function renderTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === state.ui.activeTab);
+      });
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.toggle('active', section.id === `tab-${state.ui.activeTab}`);
+      });
+    }
+
+    function renderLists() {
+      const lists = filteredLists();
+      listStack.innerHTML = lists.length ? lists.map(list => {
+        const done = list.items.filter(item => item.done).length;
+        return `
+          <div class="list-card ${list.id === state.activeListId ? 'active' : ''}" data-list-id="${list.id}">
+            <div class="row"><strong>${escapeHtml(list.title)}</strong><div class="tiny">${done}/${list.items.length} complete • ${fmtDate(list.createdAt)}</div></div>
+          </div>
+        `;
+      }).join('') : '<div class="empty">No matching lists found.</div>';
+
+      document.querySelectorAll('.list-card').forEach(card => {
+        card.addEventListener('click', () => {
+          state.activeListId = card.dataset.listId;
+          state.ui.activeTab = 'work';
+          saveState();
+          render();
+        });
+      });
+    }
+
+    function renderStats() {
+      const allItems = state.lists.flatMap(list => list.items);
+      statsGrid.innerHTML = `
+        <div class="stat-card"><div class="stat-label">Lists</div><div class="stat-value">${state.lists.length}</div></div>
+        <div class="stat-card"><div class="stat-label">Open</div><div class="stat-value">${allItems.filter(i => !i.done).length}</div></div>
+        <div class="stat-card"><div class="stat-label">Done</div><div class="stat-value">${allItems.filter(i => i.done).length}</div></div>
+        <div class="stat-card"><div class="stat-label">Undo</div><div class="stat-value">${state.ui.undoStack.length}</div></div>
+      `;
+
+      const pinned = allItems.filter(i => i.pinned).sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
+      pinnedPanel.innerHTML = pinned.length ? pinned.map(item => `
+        <div class="pinned-card">
+          <div>${escapeHtml(item.text)}</div>
+          <div class="tiny">${item.category} • ${item.done ? 'done' : 'open'}</div>
+        </div>
+      `).join('') : '<div class="empty">No pinned entries yet.</div>';
+    }
+
+    function renderTerminal() {
+      const el = document.getElementById('terminalLog');
+      if (!el) return;
+      el.innerHTML = state.ui.terminalHistory.slice(-8).map(line => {
+        const type = line.startsWith('>') ? 'command' : line.startsWith('!') ? 'error' : 'response';
+        return `<div class="terminal-line ${type}">${escapeHtml(line)}</div>`;
+      }).join('');
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function pushTerminalLine(line) {
+      state.ui.terminalHistory.push(line);
+      if (state.ui.terminalHistory.length > 80) state.ui.terminalHistory = state.ui.terminalHistory.slice(-80);
+    }
+
+    function renderWork() {
+      const active = getActiveList();
+      if (!active) {
+        workShell.innerHTML = '<div class="empty">Create a list first.</div>';
+        return;
+      }
+
+      const items = filteredItems(active);
+      workShell.innerHTML = `
+        <div class="sheet-title">Active List</div>
+        <div class="list-card">
+          <strong>${escapeHtml(active.title)}</strong>
+          <div class="tiny">${active.items.length} entries • ${active.items.filter(i => i.done).length} done • ${active.items.filter(i => i.pinned).length} pinned</div>
+          <div class="toolbar" style="margin-top:10px;">
+            <button id="undoBtn">Undo</button>
+            <button id="renameListBtn">Rename</button>
+            <button id="clearDoneBtn">Clear Done</button>
+          </div>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-label">Command Console</div>
+          <form id="terminalForm" class="terminal-row">
+            <div class="prompt">root@iphone:~$</div>
+            <input id="terminalInput" class="terminal-input" type="text" autocomplete="off" placeholder="/help" />
+            <button type="submit">Run</button>
+          </form>
+          <div class="terminal-log" id="terminalLog"></div>
+        </div>
+
+        <form id="newItemForm" class="stack">
+          <div class="sheet-title">Add Entry</div>
+          <textarea id="newItemText" placeholder="write a note, task, idea, or checklist item..."></textarea>
+          <select id="newItemCategory">
+            <option value="task">Task</option>
+            <option value="note">Note</option>
+            <option value="idea">Idea</option>
+          </select>
+          <button type="submit">Add Entry</button>
+        </form>
+
+        <div class="stack">
+          <div class="sheet-title">Filters</div>
+          <input id="itemSearch" type="text" placeholder="search entries..." value="${escapeHtml(state.ui.itemQuery)}" />
+          <select id="categoryFilter">
+            <option value="all" ${state.ui.category === 'all' ? 'selected' : ''}>All Types</option>
+            <option value="task" ${state.ui.category === 'task' ? 'selected' : ''}>Task</option>
+            <option value="note" ${state.ui.category === 'note' ? 'selected' : ''}>Note</option>
+            <option value="idea" ${state.ui.category === 'idea' ? 'selected' : ''}>Idea</option>
+          </select>
+          <select id="doneFilter">
+            <option value="all" ${state.ui.showDone === 'all' ? 'selected' : ''}>All Status</option>
+            <option value="open" ${state.ui.showDone === 'open' ? 'selected' : ''}>Open</option>
+            <option value="done" ${state.ui.showDone === 'done' ? 'selected' : ''}>Done</option>
+          </select>
+        </div>
+
+        <div class="stack" id="itemList">
+          ${items.length ? items.map(item => `
+            <article class="item ${item.done ? 'done' : ''} ${item.pinned ? 'pinned' : ''}" data-item-id="${item.id}">
+              <input class="checkbox" type="checkbox" ${item.done ? 'checked' : ''} />
+              <div class="stack">
+                <div class="item-text">${escapeHtml(item.text)}</div>
+                <div class="badges">
+                  <span class="badge ${item.pinned ? 'pin' : ''}">${item.pinned ? 'pinned' : 'normal'}</span>
+                  <span class="badge">${item.category}</span>
+                </div>
+                <div class="tiny">${fmtDate(item.createdAt)}</div>
+                <div class="actions">
+                  <button class="icon-btn pin-btn" type="button">${item.pinned ? 'Unpin' : 'Pin'}</button>
+                  <button class="icon-btn edit-btn" type="button">Edit</button>
+                  <button class="icon-btn delete-btn" type="button">Delete</button>
+                </div>
+              </div>
+            </article>
+          `).join('') : '<div class="empty">No matching entries.</div>'}
+        </div>
+      `;
+
+      document.getElementById('newItemForm').addEventListener('submit', addItem);
+      document.getElementById('terminalForm').addEventListener('submit', runCommand);
+      document.getElementById('undoBtn').addEventListener('click', () => performUndo());
+      document.getElementById('renameListBtn').addEventListener('click', renameList);
+      document.getElementById('clearDoneBtn').addEventListener('click', clearDone);
+
+      document.getElementById('itemSearch').addEventListener('input', e => { state.ui.itemQuery = e.target.value; saveState(); renderWork(); });
+      document.getElementById('categoryFilter').addEventListener('change', e => { state.ui.category = e.target.value; saveState(); renderWork(); });
+      document.getElementById('doneFilter').addEventListener('change', e => { state.ui.showDone = e.target.value; saveState(); renderWork(); });
+
+      renderTerminal();
+
+      document.querySelectorAll('.item').forEach(itemEl => {
+        const itemId = itemEl.dataset.itemId;
+        itemEl.querySelector('.checkbox').addEventListener('change', () => toggleItem(itemId));
+        itemEl.querySelector('.pin-btn').addEventListener('click', () => togglePin(itemId));
+        itemEl.querySelector('.edit-btn').addEventListener('click', () => editItem(itemId));
+        itemEl.querySelector('.delete-btn').addEventListener('click', () => deleteItem(itemId));
+      });
+    }
+
+    function render() {
+      renderTabs();
+      renderLists();
+      renderStats();
+      renderWork();
+    }
+
+    function addList(event) {
+      event.preventDefault();
+      const title = newListTitle.value.trim();
+      if (!title) return;
+      mutate(() => {
+        const list = { id: crypto.randomUUID(), title, createdAt: Date.now(), items: [] };
+        state.lists.unshift(list);
+        state.activeListId = list.id;
+        newListTitle.value = '';
+        state.ui.activeTab = 'work';
+      });
+    }
+
+    function addItem(event) {
+      event.preventDefault();
+      const active = getActiveList();
+      if (!active) return;
+      const textArea = document.getElementById('newItemText');
+      const category = document.getElementById('newItemCategory').value;
+      const text = textArea.value.trim();
+      if (!text) return;
+      mutate(() => {
+        active.items.unshift({ id: crypto.randomUUID(), text, done: false, pinned: false, category, createdAt: Date.now() });
+        textArea.value = '';
+      });
+      document.getElementById('newItemText')?.focus();
+    }
+
+    function toggleItem(itemId) {
+      const active = getActiveList();
+      if (!active) return;
+      const item = active.items.find(i => i.id === itemId);
+      if (!item) return;
+      mutate(() => { item.done = !item.done; });
+    }
+
+    function togglePin(itemId) {
+      const active = getActiveList();
+      if (!active) return;
+      const item = active.items.find(i => i.id === itemId);
+      if (!item) return;
+      mutate(() => { item.pinned = !item.pinned; });
+    }
+
+    function editItem(itemId) {
+      const active = getActiveList();
+      if (!active) return;
+      const item = active.items.find(i => i.id === itemId);
+      if (!item) return;
+      const next = prompt('Edit entry:', item.text);
+      if (next === null) return;
+      const cleaned = next.trim();
+      if (!cleaned) return;
+      mutate(() => { item.text = cleaned; });
+    }
+
+    function deleteItem(itemId) {
+      const active = getActiveList();
+      if (!active) return;
+      mutate(() => { active.items = active.items.filter(i => i.id !== itemId); });
+    }
+
+    function renameList() {
+      const active = getActiveList();
+      if (!active) return;
+      const next = prompt('Rename list:', active.title);
+      if (next === null) return;
+      const cleaned = next.trim();
+      if (!cleaned) return;
+      mutate(() => { active.title = cleaned; });
+    }
+
+    function clearDone() {
+      const active = getActiveList();
+      if (!active) return;
+      const doneCount = active.items.filter(item => item.done).length;
+      if (!doneCount) {
+        pushTerminalLine('! No completed entries to clear.');
+        saveState();
+        render();
+        return;
+      }
+      mutate(() => { active.items = active.items.filter(item => !item.done); });
+      pushTerminalLine(`Cleared ${doneCount} completed entr${doneCount === 1 ? 'y' : 'ies'}. Use Undo if needed.`);
+      saveState();
+      render();
+    }
+
+    function runCommand(event) {
+      event.preventDefault();
+      const input = document.getElementById('terminalInput');
+      if (!input) return;
+      const raw = input.value.trim();
+      if (!raw) return;
+      pushTerminalLine('> ' + raw);
+      const result = executeCommand(raw);
+      if (Array.isArray(result)) result.forEach(line => line && pushTerminalLine(line));
+      else if (result) pushTerminalLine(result);
+      input.value = '';
+      saveState();
+      render();
+      document.getElementById('terminalInput')?.focus();
+    }
+
+    function executeCommand(raw) {
+      const active = getActiveList();
+      const [cmd, ...rest] = raw.split(' ');
+      const arg = rest.join(' ').trim();
+      const lowerCmd = cmd.toLowerCase();
+
+      if (lowerCmd === '/help') return [
+        'Commands: /add task|note|idea TEXT',
+        'Commands: /list TITLE, /search TEXT, /clearsearch',
+        'Commands: /filter all|open|done',
+        'Commands: /category all|task|note|idea',
+        'Commands: /pin KEYWORD, /done KEYWORD, /undone KEYWORD, /delete KEYWORD',
+        'Commands: /undo'
+      ];
+
+      if (lowerCmd === '/undo') {
+        performUndo({ skipRender: true, skipMessage: true });
+        return 'Undo completed.';
+      }
+
+      if (lowerCmd === '/add') {
+        if (!active) return '! No active list selected.';
+        const [type, ...textParts] = rest;
+        const maybeType = (type || '').toLowerCase();
+        const category = ['task', 'note', 'idea'].includes(maybeType) ? maybeType : 'task';
+        const finalText = ['task', 'note', 'idea'].includes(maybeType) ? textParts.join(' ').trim() : arg;
+        if (!finalText) return '! Usage: /add task Buy groceries';
+        rememberState();
+        active.items.unshift({ id: crypto.randomUUID(), text: finalText, done: false, pinned: false, category, createdAt: Date.now() });
+        return `Added ${category}: ${finalText}`;
+      }
+
+      if (lowerCmd === '/list') {
+        if (!arg) return '! Usage: /list Trading OS';
+        const target = state.lists.find(list => list.title.toLowerCase().includes(arg.toLowerCase()));
+        if (!target) return `! No list matched: ${arg}`;
+        state.activeListId = target.id;
+        state.ui.activeTab = 'work';
+        return `Switched to list: ${target.title}`;
+      }
+
+      if (lowerCmd === '/search') {
+        state.ui.itemQuery = arg;
+        return `Search set to: ${arg || 'empty'}`;
+      }
+
+      if (lowerCmd === '/clearsearch') {
+        state.ui.itemQuery = '';
+        return 'Search cleared.';
+      }
+
+      if (lowerCmd === '/filter') {
+        const value = arg.toLowerCase();
+        if (!['all', 'open', 'done'].includes(value)) return '! Use /filter all|open|done';
+        state.ui.showDone = value;
+        return `Status filter: ${state.ui.showDone}`;
+      }
+
+      if (lowerCmd === '/category') {
+        const value = arg.toLowerCase();
+        if (!['all', 'task', 'note', 'idea'].includes(value)) return '! Use /category all|task|note|idea';
+        state.ui.category = value;
+        return `Category filter: ${state.ui.category}`;
+      }
+
+      if (['/pin', '/done', '/undone', '/delete'].includes(lowerCmd)) {
+        if (!active) return '! No active list selected.';
+        if (!arg) return `! Usage: ${lowerCmd} keyword`;
+        const target = active.items.find(item => item.text.toLowerCase().includes(arg.toLowerCase()));
+        if (!target) return `! No entry matched: ${arg}`;
+        rememberState();
+        if (lowerCmd === '/pin') {
+          target.pinned = !target.pinned;
+          return `${target.pinned ? 'Pinned' : 'Unpinned'}: ${target.text}`;
+        }
+        if (lowerCmd === '/done') {
+          target.done = true;
+          return `Marked done: ${target.text}`;
+        }
+        if (lowerCmd === '/undone') {
+          target.done = false;
+          return `Marked open: ${target.text}`;
+        }
+        const removedText = target.text;
+        active.items = active.items.filter(item => item.id !== target.id);
+        return `Deleted: ${removedText}`;
+      }
+
+      return '! Unknown command. Type /help';
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `matrix-notes-mobile-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed || !Array.isArray(parsed.lists)) throw new Error('Invalid backup file');
+          state = parsed;
+          normalizeState();
+          saveState();
+          render();
+          alert('Import successful.');
+        } catch {
+          alert('Import failed. Use a valid Matrix Notes backup JSON.');
+        } finally {
+          importInput.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    newListForm.addEventListener('submit', addList);
+    listSearch.value = state.ui.listQuery || '';
+    listSearch.addEventListener('input', e => {
+      state.ui.listQuery = e.target.value;
+      saveState();
+      renderLists();
+    });
+
+    exportBtn.addEventListener('click', exportData);
+    importInput.addEventListener('change', importData);
+    undoGlobalBtn.addEventListener('click', () => performUndo());
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.ui.activeTab = btn.dataset.tab;
+        saveState();
+        renderTabs();
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      const activeTag = document.activeElement?.tagName;
+      const typing = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        performUndo();
+        return;
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        state.ui.activeTab = 'work';
+        saveState();
+        render();
+        document.getElementById('terminalInput')?.focus();
+      }
+
+      if (e.key === '/' && !typing) {
+        e.preventDefault();
+        state.ui.activeTab = 'work';
+        saveState();
+        render();
+        const field = document.getElementById('terminalInput');
+        field?.focus();
+        if (field && !field.value) field.value = '/';
+      }
+    });
+
+    updateClock();
+    setInterval(updateClock, 1000);
+    createRain();
+    window.addEventListener('resize', createRain);
+    runBoot();
+    render();
+  </script>
+</body>
+</html>
